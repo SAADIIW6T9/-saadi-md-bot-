@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAADI MD BOT - Pairing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #888;
+        }
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 0 30px rgba(0,255,136,0.2);
+        }
+        #qrcode {
+            width: 250px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        .status {
+            color: #ff6b6b;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            padding: 10px 20px;
+            background: #1a1a1a;
+            border-radius: 25px;
+            border: 1px solid #333;
+        }
+        .status.connected {
+            color: #00ff88;
+            border-color: #00ff88;
+        }
+        .info-box {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .info-box h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .cmd-list {
+            list-style: none;
+        }
+        .cmd-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+        }
+        .cmd-list li:last-child {
+            border-bottom: none;
+        }
+        .cmd {
+            color: #00ff88;
+            font-weight: bold;
+            font-family: monospace;
+        }
+        .desc {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .steps {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 400px;
+            width: 100%;
+        }
+        .steps h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .steps ol {
+            padding-left: 20px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+        .steps li::marker {
+            color: #00ff88;
+        }
+        footer {
+            margin-top: auto;
+            padding-top: 30px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 SAADI MD BOT</h1>
+        <p>WhatsApp Multi-Device Bot</p>
+    </div>
+
+    <div class="status" id="status">
+        ⚡ Waiting for QR Code...
+    </div>
+
+    <div class="qr-container">
+        <div id="qrcode">
+            QR will appear here<br>
+            (Refresh page)
+        </div>
+    </div>
+
+    <div class="steps">
+        <h3>📱 How to Pair</h3>
+        <ol>
+            <li>Open WhatsApp on phone</li>
+            <li>Tap ⋮ Menu → Linked Devices</li>
+            <li>Tap "Link a Device"</li>
+            <li>Point camera at QR code</li>
+        </ol>
+    </div>
+
+    <div class="info-box">
+        <h3>⌨️ Bot Commands</h3>
+        <ul class="cmd-list">
+            <li><span class="cmd">.ping</span> <span class="desc">Check status</span></li>
+            <li><span class="cmd">.menu</span> <span class="desc">Show all commands</span></li>
+            <li><span class="cmd">.owner</span> <span class="desc">Owner info</span></li>
+            <li><span class="cmd">.sticker</span> <span class="desc">Create sticker</span></li>
+            <li><span class="cmd">.ytmp3</span> <span class="desc">YouTube audio</span></li>
+        </ul>
+    </div>
+
+    <footer>
+        Made with ❤️ by SAADI | Powered by Baileys MD
+    </footer>
+
+    <script>
+        // Simple QR fetch (will work when bot is running)
+        async function checkStatus() {
+            try {
+                const res = await fetch('/qr');
+                const data = await res.json();
+                
+                if (data.qr) {
+                    document.getElementById('qrcode').innerHTML = 
+                        `<img src="${data.qr}" width="250" height="250">`;
+                }
+                
+                if (data.status === 'connected') {
+                    document.getElementById('status').classList.add('connected');
+                    document.getElementById('status').innerHTML = '✅ Bot Connected!';
+                }
+            } catch(e) {
+                console.log('Waiting for bot...');
+            }
+        }
+        
+        setInterval(checkStatus, 3000);
+    </script>
+</body>
+</html>
